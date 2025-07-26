@@ -1,0 +1,394 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Orbitron', monospace;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+  color: #ffffff;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 69, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(30, 144, 255, 0.1) 0%, transparent 50%);
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.game-header h1 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  text-shadow: 
+    0 0 10px rgba(255, 69, 0, 0.8),
+    0 0 20px rgba(255, 69, 0, 0.6),
+    0 0 30px rgba(255, 69, 0, 0.4);
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+}
+
+.status {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #00ff88;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  margin-bottom: 15px;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.reset-btn {
+  background: linear-gradient(45deg, #ff4500, #ff6500);
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
+}
+
+.reset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 69, 0, 0.4);
+  background: linear-gradient(45deg, #ff6500, #ff8500);
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 0 30px rgba(0, 0, 0, 0.5),
+    inset 0 0 30px rgba(255, 255, 255, 0.05);
+  margin-bottom: 30px;
+}
+
+.cell {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #2a2a3a, #3a3a4a);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cell:hover {
+  background: linear-gradient(135deg, #3a3a4a, #4a4a5a);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.cell.flame {
+  background: radial-gradient(circle, #ff4500 0%, #ff6500 30%, #ff8500 60%, #ffa500 100%);
+  animation: flameFlicker 0.8s infinite alternate ease-in-out;
+  box-shadow: 
+    0 0 20px rgba(255, 69, 0, 0.8),
+    inset 0 0 20px rgba(255, 140, 0, 0.3);
+  border: 1px solid #ff6500;
+}
+
+.cell.brigade {
+  background: radial-gradient(circle, #1e90ff 0%, #4169e1 30%, #0066cc 60%, #003d99 100%);
+  animation: brigadeGlow 1.2s infinite alternate ease-in-out;
+  box-shadow: 
+    0 0 20px rgba(30, 144, 255, 0.6),
+    inset 0 0 20px rgba(65, 105, 225, 0.3);
+  border: 1px solid #4169e1;
+}
+
+.cell.valid-move {
+  background: linear-gradient(135deg, #00ff88, #00cc66);
+  animation: validMovePulse 1s infinite ease-in-out;
+  border: 2px solid #00ff88;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+}
+
+.cell.water-range {
+  background: linear-gradient(135deg, #00bfff, #0099cc);
+  animation: waterPulse 1s infinite ease-in-out;
+  border: 2px solid #00bfff;
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.5);
+}
+
+.cell.firewall {
+  background: linear-gradient(135deg, #8b4513, #a0522d);
+  border: 2px solid #654321;
+  box-shadow: 0 0 10px rgba(139, 69, 19, 0.5);
+}
+
+.cell.hydrant {
+  background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+  border: 2px solid #808080;
+  box-shadow: 0 0 15px rgba(192, 192, 192, 0.5);
+  animation: hydrantGlow 2s infinite ease-in-out;
+}
+
+.cell.flame-weak {
+  background: radial-gradient(circle, #ff6500 0%, #ff8500 50%, #ffa500 100%);
+  animation: flameWeak 1s infinite alternate ease-in-out;
+}
+
+.cell.flame-medium {
+  background: radial-gradient(circle, #ff4500 0%, #ff6500 40%, #ff8500 80%);
+  animation: flameMedium 0.8s infinite alternate ease-in-out;
+}
+
+.cell.flame-strong {
+  background: radial-gradient(circle, #ff0000 0%, #ff4500 30%, #ff6500 60%, #ff8500 100%);
+  animation: flameStrong 0.6s infinite alternate ease-in-out;
+}
+
+.cell-content {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.burn-indicator {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 10px;
+  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.game-info {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 10px 0;
+  font-size: 1rem;
+}
+
+.info-item {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #00ff88;
+}
+
+@keyframes flameFlicker {
+  0% {
+    transform: scale(1);
+    filter: brightness(1) saturate(1);
+  }
+  100% {
+    transform: scale(1.02);
+    filter: brightness(1.1) saturate(1.2);
+  }
+}
+
+@keyframes brigadeGlow {
+  0% {
+    transform: scale(1);
+    filter: brightness(1) saturate(1);
+  }
+  100% {
+    transform: scale(1.01);
+    filter: brightness(1.05) saturate(1.1);
+  }
+}
+
+@keyframes validMovePulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+}
+
+@keyframes waterPulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+}
+
+@keyframes hydrantGlow {
+  0% {
+    box-shadow: 0 0 15px rgba(192, 192, 192, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 25px rgba(192, 192, 192, 0.8);
+  }
+}
+
+@keyframes flameWeak {
+  0% {
+    transform: scale(0.95);
+    filter: brightness(0.8);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes flameMedium {
+  0% {
+    transform: scale(0.98);
+    filter: brightness(0.9);
+  }
+  100% {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+  }
+}
+
+@keyframes flameStrong {
+  0% {
+    transform: scale(1);
+    filter: brightness(1) saturate(1);
+  }
+  100% {
+    transform: scale(1.05);
+    filter: brightness(1.2) saturate(1.3);
+  }
+}
+
+.coord {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 400;
+}
+
+.game-rules {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 600px;
+  text-align: center;
+}
+
+.game-rules h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #00ff88;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.rules-content {
+  display: flex;
+  justify-content: space-around;
+  gap: 30px;
+}
+
+.rule-section {
+  flex: 1;
+}
+
+.rule-section h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.rule-section p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .game-header h1 {
+    font-size: 2rem;
+  }
+  
+  .cell {
+    width: 45px;
+    height: 45px;
+    font-size: 24px;
+  }
+  
+  .rules-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .game-container {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .cell {
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
+  }
+  
+  .status {
+    font-size: 1rem;
+    padding: 8px 16px;
+  }
+}
